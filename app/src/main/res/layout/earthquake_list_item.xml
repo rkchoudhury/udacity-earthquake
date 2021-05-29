@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="10dp">
+
+    <TextView
+        android:id="@+id/list_item_magnitude"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="20dp"
+        android:text="0.0"
+        android:background="@drawable/magnitude_circle"
+        android:gravity="center"
+        android:layout_marginVertical="10dp"
+        android:textColor="@color/white" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/list_item_sub_location"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            style="@style/MediumTextStyle"
+            android:gravity="bottom"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_weight="1"
+            android:text="NEAR THE" />
+
+        <TextView
+            android:id="@+id/list_item_location"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="start"
+            style="@style/LargeTextStyle"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="Location" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/list_item_date"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            style="@style/MediumTextStyle"
+            android:text="16th May 2021" />
+        <TextView
+            android:id="@+id/list_item_time"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            style="@style/MediumTextStyle"
+            android:textAlignment="textEnd"
+            android:text="3.30am" />
+    </LinearLayout>
+
+
+</LinearLayout>
