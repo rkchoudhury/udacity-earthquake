@@ -19,8 +19,16 @@ public class EarthquakeDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_earthquake_detail);
 
-        EarthquakeAsyncTask task = new EarthquakeAsyncTask();
-        task.execute(USGS_REQUEST_URL);
+        // Method 1: API Integration
+        // EarthquakeAsyncTask task = new EarthquakeAsyncTask();
+        // task.execute(USGS_REQUEST_URL);
+
+        // Method 2: Getting value from the previous screen
+        String title = getIntent().getStringExtra("title");
+        String time = getIntent().getStringExtra("time");
+        Double tsunamiAlert = getIntent().getDoubleExtra("tsunamiAlert", 0);
+        Event details = new Event(title, time, tsunamiAlert);
+        updateUI(details);
     }
 
     private void updateUI(Event earthquake) {

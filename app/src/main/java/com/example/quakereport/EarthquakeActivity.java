@@ -41,21 +41,18 @@ public class EarthquakeActivity extends AppCompatActivity {
         earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-//                sendIntent.setData(Uri.parse("https://stackoverflow.com/questions/43980740/open-url-in-intent/43981160"));
-//
-//                if (sendIntent.resolveActivity(getPackageManager()) != null) {
-//                    startActivity(sendIntent);
-//                }
+                Intent intent = new Intent(EarthquakeActivity.this, EarthquakeDetailActivity.class);
 
-//                try {
-//                    Uri webpage = Uri.parse("https://stackoverflow.com/questions/43980740/open-url-in-intent/43981160");
-//                    Intent myIntent = new Intent(Intent.ACTION_VIEW, webpage);
-//                    startActivity(myIntent);
-//                } catch (ActivityNotFoundException e) {
-//                    Toast.makeText(EarthquakeActivity.this, "No application can handle this request. Please install a web browser or check your URL.",  Toast.LENGTH_LONG).show();
-//                    e.printStackTrace();
-//                }
+                Earthquake currentEarthquake = earthquakes.get(position);
+                intent.putExtra("title", currentEarthquake.getmLocation());
+                intent.putExtra("time", currentEarthquake.getmDate());
+                intent.putExtra("tsunamiAlert", currentEarthquake.getmMagnitude());
+
+                // TODO: How to pass the object to the next screen instead of above value
+//                Event earthquakeDetails = new Event(currentEarthquake.getmLocation(), currentEarthquake.getmDate(), currentEarthquake.getmMagnitude());
+//                intent.putExtra("earthquakeDetails", earthquakeDetails);
+
+                startActivity(intent);
             }
         });
     }
