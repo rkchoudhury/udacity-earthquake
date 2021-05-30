@@ -1,49 +1,36 @@
 package com.example.quakereport;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class EarthquakeActivity extends AppCompatActivity {
 
-    private static final String USGS_REQUEST_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2019-01-01&endtime=2019-12-01&minmagnitude=6";
+    private static final String USGS_REQUEST_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
+    private EarthquakeAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_earthquake);
 
-        EarthquakeAsyncTask task = new EarthquakeAsyncTask();
-        task.execute(USGS_REQUEST_URL);
-    }
-
-    private void updateUI(ArrayList<Earthquake> earthquakes) {
         ListView earthquakeListView = findViewById(R.id.list);
-
-        EarthquakeAdapter adapter = new EarthquakeAdapter(this, earthquakes);
-        earthquakeListView.setAdapter(adapter);
+        mAdapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
+        earthquakeListView.setAdapter(mAdapter);
 
         earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(EarthquakeActivity.this, EarthquakeDetailActivity.class);
 
-                Earthquake currentEarthquake = earthquakes.get(position);
+                Earthquake currentEarthquake = (Earthquake) parent.getItemAtPosition(position);
                 intent.putExtra("title", currentEarthquake.getmLocation());
                 intent.putExtra("time", currentEarthquake.getmDate());
                 intent.putExtra("tsunamiAlert", currentEarthquake.getmMagnitude());
@@ -55,16 +42,28 @@ public class EarthquakeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        EarthquakeAsyncTask task = new EarthquakeAsyncTask();
+        task.execute(USGS_REQUEST_URL);
     }
 
-    private class EarthquakeAsyncTask extends AsyncTask<String, Void, ArrayList<Earthquake>>{
+    private void updateUI(ArrayList<Earthquake> earthquakes) {
+
+        mAdapter.clear();
+
+        if (earthquakes != null && !earthquakes.isEmpty()) {
+            mAdapter.addAll(earthquakes);
+        }
+    }
+
+    private class EarthquakeAsyncTask extends AsyncTask<String, Void, ArrayList<Earthquake>> {
 
         @Override
         protected ArrayList<Earthquake> doInBackground(String... strings) {
             if (strings.length < 1 || strings[0] == null) {
                 return null;
             }
-            ArrayList<Earthquake>  earthquakeList = QueryUtils.getEarthquakeData(strings[0]);
+            ArrayList<Earthquake> earthquakeList = QueryUtils.getEarthquakeData(strings[0]);
             return earthquakeList;
         }
 
