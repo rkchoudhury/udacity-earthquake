@@ -56,17 +56,19 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:gravity="bottom"
+            android:gravity="right"
             style="@style/MediumTextStyle"
+            android:paddingHorizontal="5dp"
             android:text="16th May 2021" />
-        <TextView
-            android:id="@+id/list_item_time"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            style="@style/MediumTextStyle"
-            android:textAlignment="textEnd"
-            android:text="3.30am" />
+<!--        <TextView-->
+<!--            android:id="@+id/list_item_time"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_weight="1"-->
+<!--            style="@style/MediumTextStyle"-->
+<!--            android:textAlignment="textEnd"-->
+<!--            android:visibility="invisible"-->
+<!--            android:text="3.30am" />-->
     </LinearLayout>
 
 
