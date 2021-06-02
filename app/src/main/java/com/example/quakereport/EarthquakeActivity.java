@@ -1,12 +1,17 @@
 package com.example.quakereport;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -46,6 +51,7 @@ public class EarthquakeActivity extends AppCompatActivity {
 
         EarthquakeAsyncTask task = new EarthquakeAsyncTask();
         task.execute(USGS_REQUEST_URL);
+        this.checkInternetConnectivity();
     }
 
     private void updateUI(ArrayList<Earthquake> earthquakes) {
@@ -72,7 +78,7 @@ public class EarthquakeActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList<Earthquake> earthquakes) {
             ProgressBar progressBar = findViewById(R.id.progress_circular);
             progressBar.setVisibility(View.GONE);
-            if (earthquakes == null) {
+
             if (earthquakes == null || earthquakes.isEmpty()) {
                 ListView earthquakeListView = findViewById(R.id.list);
                 earthquakeListView.setEmptyView(findViewById(R.id.list_empty_view));
@@ -80,5 +86,18 @@ public class EarthquakeActivity extends AppCompatActivity {
             }
             updateUI(earthquakes);
         }
+    }
+
+    private void checkInternetConnectivity() {
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+        if (!isConnected) {
+            TextView emptyTextView = findViewById(R.id.list_empty_view);
+            emptyTextView.setText("No internet connection");
+            emptyTextView.setVisibility(View.VISIBLE);
+        }
+        Log.d("rkkk", "onCreate: isConnected ::" + isConnected);
     }
 }
