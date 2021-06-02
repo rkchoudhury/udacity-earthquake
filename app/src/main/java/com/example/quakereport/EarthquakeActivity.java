@@ -73,6 +73,9 @@ public class EarthquakeActivity extends AppCompatActivity {
             ProgressBar progressBar = findViewById(R.id.progress_circular);
             progressBar.setVisibility(View.GONE);
             if (earthquakes == null) {
+            if (earthquakes == null || earthquakes.isEmpty()) {
+                ListView earthquakeListView = findViewById(R.id.list);
+                earthquakeListView.setEmptyView(findViewById(R.id.list_empty_view));
                 return;
             }
             updateUI(earthquakes);
