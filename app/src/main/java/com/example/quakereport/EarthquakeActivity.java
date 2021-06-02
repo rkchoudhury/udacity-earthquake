@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -69,6 +70,8 @@ public class EarthquakeActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<Earthquake> earthquakes) {
+            ProgressBar progressBar = findViewById(R.id.progress_circular);
+            progressBar.setVisibility(View.GONE);
             if (earthquakes == null) {
                 return;
             }
