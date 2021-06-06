@@ -1,10 +1,10 @@
 package com.example.quakereport;
 
-import android.content.Context;
+import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,9 +17,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
-public class EarthquakeActivity extends AppCompatActivity {
+public class EarthquakeActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Earthquake>> {
 
+    private static final String LOG_TAG = "EarthquakeActivity";
     private static final String USGS_REQUEST_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
+    private static final int EARTHQUAKE_LOADER_ID = 1;
+
     private EarthquakeAdapter mAdapter;
 
     @Override
@@ -49,9 +52,11 @@ public class EarthquakeActivity extends AppCompatActivity {
             }
         });
 
-        EarthquakeAsyncTask task = new EarthquakeAsyncTask();
-        task.execute(USGS_REQUEST_URL);
         this.checkInternetConnectivity();
+
+        // With LoaderManager
+        LoaderManager loaderManager = getLoaderManager();
+        loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, this);
     }
 
     private void updateUI(ArrayList<Earthquake> earthquakes) {
@@ -63,29 +68,31 @@ public class EarthquakeActivity extends AppCompatActivity {
         }
     }
 
-    private class EarthquakeAsyncTask extends AsyncTask<String, Void, ArrayList<Earthquake>> {
+    // With LoaderManager: Fetching response from API and updating the list
+    @Override
+    public Loader<ArrayList<Earthquake>> onCreateLoader(int id, Bundle args) {
+        Log.d(LOG_TAG, "onCreateLoader: ");
+        return new EarthquakeLoader(this, USGS_REQUEST_URL);
+    }
 
-        @Override
-        protected ArrayList<Earthquake> doInBackground(String... strings) {
-            if (strings.length < 1 || strings[0] == null) {
-                return null;
-            }
-            ArrayList<Earthquake> earthquakeList = QueryUtils.getEarthquakeData(strings[0]);
-            return earthquakeList;
+    @Override
+    public void onLoadFinished(Loader<ArrayList<Earthquake>> loader, ArrayList<Earthquake> earthquakes) {
+        Log.d(LOG_TAG, "onLoadFinished: ");
+        ProgressBar progressBar = findViewById(R.id.progress_circular);
+        progressBar.setVisibility(View.GONE);
+
+        if (earthquakes == null || earthquakes.isEmpty()) {
+            ListView earthquakeListView = findViewById(R.id.list);
+            earthquakeListView.setEmptyView(findViewById(R.id.list_empty_view));
+            return;
         }
+        updateUI(earthquakes);
+    }
 
-        @Override
-        protected void onPostExecute(ArrayList<Earthquake> earthquakes) {
-            ProgressBar progressBar = findViewById(R.id.progress_circular);
-            progressBar.setVisibility(View.GONE);
-
-            if (earthquakes == null || earthquakes.isEmpty()) {
-                ListView earthquakeListView = findViewById(R.id.list);
-                earthquakeListView.setEmptyView(findViewById(R.id.list_empty_view));
-                return;
-            }
-            updateUI(earthquakes);
-        }
+    @Override
+    public void onLoaderReset(Loader<ArrayList<Earthquake>> loader) {
+        Log.d(LOG_TAG, "onLoadFinished: ");
+        mAdapter.clear();
     }
 
     private void checkInternetConnectivity() {
