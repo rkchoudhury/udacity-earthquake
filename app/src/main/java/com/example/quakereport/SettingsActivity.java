@@ -2,8 +2,11 @@ package com.example.quakereport;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -14,6 +17,28 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public static class EarthquakePreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.settings_main);
+
+            Preference minMagnitude = findPreference(getString(R.string.settings_min_magnitude_key));
+            bindPreferenceSummaryToValue(minMagnitude);
+        }
+
+        public boolean onPreferenceChange(Preference preference, Object value) {
+            String stringValue = value.toString();
+            preference.setSummary(stringValue);
+            return true;
+        }
+
+        private void bindPreferenceSummaryToValue(Preference preference) {
+            preference.setOnPreferenceChangeListener((Preference.OnPreferenceChangeListener) this);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(preference.getContext());
+            String preferenceString = preferences.getString(preference.getKey(), "");
+            onPreferenceChange(preference, preferenceString);
+        }
+
 
     }
 }
